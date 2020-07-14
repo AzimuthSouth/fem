@@ -170,9 +170,9 @@ b[5,11] = diff(L1,x)
 
 bd = b*d
 '''
-print "bd=\n"
+#print "bd=\n"
 pprint(simplify(bd))
-print "\n"
+#print "\n"
 '''
 #stiffness matrix
 bdb = b.T*F*b
