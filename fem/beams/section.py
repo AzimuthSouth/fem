@@ -14,38 +14,38 @@ geometric characteristic of section is vector
 import numpy
 class Section(object):
     def set_data(self, data):
-        self.geom = data[0];
-        self.mat = data[1];
-        #print str(data[1][0,0]);
+        self.geom = data[0]
+        self.mat = data[1]
+        #print str(data[1][0,0])
 
     def calc_stiffness(self):
-        E = 1.0 / self.mat[0,0];
-        G = 1.0 / self.mat[2,2];
+        E = 1.0 / self.mat[0,0]
+        G = 1.0 / self.mat[2,2]
         self.K = numpy.matrix([ [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0], 
                     [0.0, 1.0, 0.0, 0.0, 0.0, -1.0, 0.0], 
                     [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0], 
                     [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0],
                     [1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0],
                     [0.0, -1.0, 1.0, 0.0, 0.0, 1.0, 0.0],
-                    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]]);
+                    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
         #print self.K.shape
     def calc_geom(self):
         self.G = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
     def get_k(self):
-        return self.K;
+        return self.K
 
     def get_g(self):
         return self.G
 
 class Circle(Section):
     def calc_stiffness(self):
-        r = self.geom[0];
-        F = numpy.pi * r**2;
-        I = numpy.pi * r**4 / 4;
-        Ip = numpy.pi * r**4 / 2;
-        E = 1.0 / self.mat[0,0];
-        G = 1.0 / self.mat[2,2];
+        r = self.geom[0]
+        F = numpy.pi * r**2
+        I = numpy.pi * r**4 / 4
+        Ip = numpy.pi * r**4 / 2
+        E = 1.0 / self.mat[0,0]
+        G = 1.0 / self.mat[2,2]
         #print "G={}".format(G)
         self.K = numpy.matrix([ [E * F,   0.0,   0.0,   0.0,   0.0,    0.0,    0.0],
                     [  0.0, G * F,   0.0,   0.0,   0.0,    0.0,    0.0],
@@ -53,13 +53,13 @@ class Circle(Section):
                     [  0.0,   0.0,   0.0, E * I,   0.0,    0.0,    0.0], 
                     [  0.0,   0.0,   0.0,   0.0, E * I,    0.0,    0.0], 
                     [  0.0,   0.0,   0.0,   0.0,   0.0, G * Ip,    0.0],
-                    [  0.0,   0.0,   0.0,   0.0,   0.0,    0.0, E * Ip]]);
+                    [  0.0,   0.0,   0.0,   0.0,   0.0,    0.0, E * Ip]])
 
     def calc_geom(self):
-        r = self.geom[0];
-        F = numpy.pi * r**2;
-        I = numpy.pi * r**4 / 4;
-        Ip = numpy.pi * r**4 / 2;
+        r = self.geom[0]
+        F = numpy.pi * r**2
+        I = numpy.pi * r**4 / 4
+        Ip = numpy.pi * r**4 / 2
         W = I / r
         Wp = Ip / r
         S = r**2 / 4
@@ -78,8 +78,8 @@ class Rectangle(Section):
             (b, h) = (h, b)     
         [a1, b1, c1] = self.calc_abc(x)     
         Ik = b1 * h * b**3
-        E = 1.0 / self.mat[0,0];
-        G = 1.0 / self.mat[2,2];
+        E = 1.0 / self.mat[0,0]
+        G = 1.0 / self.mat[2,2]
         self.K = numpy.matrix([ [E * F,   0.0,   0.0,   0.0,   0.0,    0.0,    0.0],    #ex
                     [  0.0, G * F,   0.0,   0.0,   0.0,    0.0,    0.0],    #gamaXY 
                     [  0.0,   0.0, G * F,   0.0,   0.0,    0.0,    0.0],    #gamaXZ
@@ -124,22 +124,22 @@ class Rectangle(Section):
 class TwoTavr(Section):
     def calc_stiffness(self):
         #for symmetric twotavr section
-        [w, h, d, t] = self.geom;
-        F = 2 * d * h + (w - 2 * d) * t;
-        Iy = d * h**3 / 6 + (w - 2 * d) * t**3 / 12;
-        Iz = h / 3 * (w**3 / 4 - 2 *(w / 2 - d)**3) + 2 * t / 3 * (w / 2 -  d)**3;
-        Ip = Iy + Iz;
+        [w, h, d, t] = self.geom
+        F = 2 * d * h + (w - 2 * d) * t
+        Iy = d * h**3 / 6 + (w - 2 * d) * t**3 / 12
+        Iz = h / 3 * (w**3 / 4 - 2 *(w / 2 - d)**3) + 2 * t / 3 * (w / 2 -  d)**3
+        Ip = Iy + Iz
         Ip = 2 * h * d**3 / 3 + (w - 2 * d) * t**3 / 3
         Iw = h**3 * (w - d)**2 * d / 24
         #print 'Iw=' + str(Iw)
         #print 'Ik=' + str(Ip)
-        E = 1.0 / self.mat[0,0];
-        G = 1.0 / self.mat[2,2];
+        E = 1.0 / self.mat[0,0]
+        G = 1.0 / self.mat[2,2]
         self.K = numpy.matrix([ [E * F,   0.0,   0.0,   0.0,   0.0,    0.0,    0.0],
                     [  0.0, G * F,   0.0,   0.0,   0.0,    0.0,    0.0],
                     [  0.0,   0.0, G * F,   0.0,   0.0,    0.0,    0.0],
                     [  0.0,   0.0,   0.0, E * I,   0.0,    0.0,    0.0], 
                     [  0.0,   0.0,   0.0,   0.0, E * I,    0.0,    0.0], 
                     [  0.0,   0.0,   0.0,   0.0,   0.0, G * Ip,    0.0],
-                    [  0.0,   0.0,   0.0,   0.0,   0.0,    0.0, E * Iw]]);
+                    [  0.0,   0.0,   0.0,   0.0,   0.0,    0.0, E * Iw]])
 

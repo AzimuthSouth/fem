@@ -15,8 +15,8 @@ class element:
         self.sig = []
 
     def calc(self):
-        #import classicWarp1;
-        #self.cb = classicWarp1.classicWarp();
+        #import classicWarp1
+        #self.cb = classicWarp1.classicWarp()
         self.cb = timoshenkoBeam.timoshenkoBeam()
         #self.cb = classicBeam.classicBeam()        
         self.cb.setData(self.param)

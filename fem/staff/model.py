@@ -20,9 +20,9 @@ class model:
         #e.setData([75.0e9, 0.3, 28.80e9])
         e.setData([2.0e5, 0.3, 7.69e4])
         e.calc()
-        #s = section.Circle();
+        #s = section.Circle()
         s = section.Rectangle()
-        #s = section.TwoTavr();
+        #s = section.TwoTavr()
         #r = (10.0 / math.pi)**0.5
         #s.set_data([[r], e.get_a()]); #for circle section
         #s.set_data([[0.5, 0.16, 0.02, 0.014], e.get_a()])
@@ -45,14 +45,14 @@ class model:
         #print 'ke= '+ str(len(self.elm))
         #for i in range(len(self.elm)):
             #print str(self.elm[i].getK())
-            #print;
+            #print
             pass
 
     def grossMatrix(self):
         ku = len(self.nds)
         kss = self.kss
-        numpy.set_printoptions(precision=3,threshold=sys.maxsize);
-        MM = numpy.zeros((ku * kss, ku * kss));
+        numpy.set_printoptions(precision=3,threshold=sys.maxsize)
+        MM = numpy.zeros((ku * kss, ku * kss))
         M = numpy.matrix(MM)
         for i in range(len(self.elm)):
             #self.elm[i].getK() - matrix [KU*KSS,KU*KSS]
@@ -71,7 +71,7 @@ class model:
 
     def grossLoad(self):
         ku = len(self.nds)
-        kss = self.kss;
+        kss = self.kss
         import numpy
         self.RR = numpy.zeros((ku * kss,1))
         for i in range(len(self.R)):
@@ -112,12 +112,12 @@ class model:
         dsp = []
         eps = []
         frc = []
-        kss = self.kss;
+        kss = self.kss
         for i in range(len(self.elm)):
             #print 'postproc \n'
-            ui = numpy.zeros((2 * kss,1));
+            ui = numpy.zeros((2 * kss,1))
             ui = numpy.matrix(ui)
-            ind = 0;
+            ind = 0
             #choose nodes displacmets for current element
             for j in range(len(self.elm[i].ND)):
                 nn = self.elm[i].ND[j]
