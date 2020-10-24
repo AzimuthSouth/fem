@@ -1,12 +1,12 @@
 '''
 stifness characteristic of section is matrix
-[EF 0   0   Esz Esy 0   0]
-[0  GxyF    0   0   0   -Gsy    0]
-[0  0   GxzF    0   0   GSz 0]
-[Esz    0   0   EIy EIr 0   0]
-[Esy    0   0   EIr EIz 0   0]
-[0  -GSy    GSz 0   0   EIk 0]
-[0  0   0   0   0   0   EIw]
+[EF 	0   	0   	Esy 	Esz 	0   	Ew ]
+[0  	GxyF    0   	0   	0   	-Gsy    0  ]
+[0  	0   	GxzF    0   	0   	GSz 	0  ]
+[Esy    0   	0   	EIy 	EIr 	0   	Ewy]
+[Esz    0   	0   	EIr 	EIz 	0   	Ewz]
+[0  	-GSy    GSz 	0   	0   	EIk 	0  ]
+[Ew  	0  	0   	Ewy   	Ewz   	0   	EIw]
 
 geometric characteristic of section is vector
 [F, Iy, Iz, Ik, Wy, Wz, Wk]
@@ -127,10 +127,11 @@ class TwoTavr(Section):
         [w, h, d, t] = self.geom
         F = 2 * d * h + (w - 2 * d) * t
         Iy = d * h**3 / 6 + (w - 2 * d) * t**3 / 12
-        Iz = h / 3 * (w**3 / 4 - 2 *(w / 2 - d)**3) + 2 * t / 3 * (w / 2 -  d)**3
+        Iz = h * w**3 / 12 - (h - t) * (w - 2 * d)**3 / 12
         Ip = Iy + Iz
         Ip = 2 * h * d**3 / 3 + (w - 2 * d) * t**3 / 3
         Iw = h**3 * (w - d)**2 * d / 24
+        print("F={}, Iy={}, Iz={}, Ip={}, Iw={}".format(F, Iy, Iz, Ip, Iw))
         #print 'Iw=' + str(Iw)
         #print 'Ik=' + str(Ip)
         E = 1.0 / self.mat[0,0]
@@ -138,8 +139,22 @@ class TwoTavr(Section):
         self.K = numpy.matrix([ [E * F,   0.0,   0.0,   0.0,   0.0,    0.0,    0.0],
                     [  0.0, G * F,   0.0,   0.0,   0.0,    0.0,    0.0],
                     [  0.0,   0.0, G * F,   0.0,   0.0,    0.0,    0.0],
-                    [  0.0,   0.0,   0.0, E * I,   0.0,    0.0,    0.0], 
-                    [  0.0,   0.0,   0.0,   0.0, E * I,    0.0,    0.0], 
+                    [  0.0,   0.0,   0.0, E * Iy,   0.0,    0.0,    0.0], 
+                    [  0.0,   0.0,   0.0,   0.0, E * Iz,    0.0,    0.0], 
                     [  0.0,   0.0,   0.0,   0.0,   0.0, G * Ip,    0.0],
                     [  0.0,   0.0,   0.0,   0.0,   0.0,    0.0, E * Iw]])
+    
+    def calc_geom(self):
+        [w, h, d, t] = self.geom
+        F = 2 * d * h + (w - 2 * d) * t
+        Iy = d * h**3 / 6 + (w - 2 * d) * t**3 / 12
+        Iz = h * w**3 / 12 - (h - t) * (w - 2 * d)**3 / 12
+        Ip = 2 * h * d**3 / 3 + (w - 2 * d) * t**3 / 3
+        Iw = h**3 * (w - d)**2 * d / 24
+        W1 = Iy
+        W2 = Iz
+        S1 = Iy
+        S2 = Iz
+        Wk = Ip
+        self.G = [F, Iy, Iz, Ip, W1, W2, Wk, S1, S2]
 

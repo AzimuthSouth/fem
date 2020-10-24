@@ -15,18 +15,17 @@ class model:
         self.NG = data[3]
         self.kss = len(self.R[0])
 
-    def calcElems(self):
+    def calcElems(self, matid, fmx, beammod, sectid, sectpar):
         e = elastic.elastic()
-        #e.setData([75.0e9, 0.3, 28.80e9])
-        e.setData([2.0e5, 0.3, 7.69e4])
+        e.setData(fmx)   
         e.calc()
-        #s = section.Circle()
-        s = section.Rectangle()
-        #s = section.TwoTavr()
-        #r = (10.0 / math.pi)**0.5
-        #s.set_data([[r], e.get_a()]); #for circle section
-        #s.set_data([[0.5, 0.16, 0.02, 0.014], e.get_a()])
-        s.set_data([[10.0, 1.0], e.get_a()])        
+        if sectid == 1:
+            s = section.Circle()
+        if sectid == 2:
+            s = section.Rectangle()
+        if sectid == 3:
+            s = section.TwoTavr()
+	s.set_data([sectpar, e.get_a()])
         s.calc_stiffness()
         s.calc_geom()
         self.elm = []
@@ -38,7 +37,7 @@ class model:
             l = va.dist(self.nds[n1], self.nds[n2])
             ei = element.element()
             ei.setData([2, self.kss, [n1, n2], [[l], s.get_k(), s.get_g()]])
-            ei.calc()
+            ei.calc(beammod)
             self.elm.append(ei)
 
     def checkEl(self):
@@ -118,7 +117,7 @@ class model:
             ui = numpy.zeros((2 * kss,1))
             ui = numpy.matrix(ui)
             ind = 0
-            #choose nodes displacmets for current element
+            #choose nodes displacemets for current element
             for j in range(len(self.elm[i].ND)):
                 nn = self.elm[i].ND[j]
                 for k in range(self.elm[i].KSS):
@@ -153,3 +152,10 @@ class model:
                 f.write('\n')
 
         f.close()
+
+    def case_result(self):
+        #get displacement for last node
+        ku = len(self.nds)
+        kss = self.kss
+        return self.u[(ku - 1) * kss:]
+

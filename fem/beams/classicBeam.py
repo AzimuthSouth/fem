@@ -106,7 +106,7 @@ class classicBeam:
         M[10,9] = M[9,10]
         M[10,10] = 4 * K[4,4] / l
 
-        M[11,5] = -K[5,5] / l
+        M[11,5] = M[5,11]
         M[11,11] = K[5,5] / l
         self.K = M
 
@@ -119,17 +119,17 @@ class classicBeam:
     def L1(self, x):
         return x / self.geom[0]
 
-    def N0(self, x):
+    def ksi1(self, x):
         return 1 - 3 * (x / self.geom[0])**2 + 2 * (x / self.geom[0])**3
+    
+    def ksi2(self, x):
+        return -x / (self.geom[0]**2) * (x - self.geom[0])**2
 
-    def N1(self, x):
+    def ksi3(self, x):
         return 3 * (x / self.geom[0])**2 - 2 * (x / self.geom[0])**3
 
-    def F0(self, x):
-        return x / (self.geom[0]**2) * (x - self.geom[0])**2
-
-    def F1(self, x):
-        return (x / self.geom[0])**2 * (x - self.geom[0])
+    def ksi4(self, x):
+        return (x / self.geom[0])**2 * (self.geom[0] - x)
 
     def dL0(self, x):
         return  -1.0 / self.geom[0]
@@ -137,6 +137,18 @@ class classicBeam:
     def dL1(self, x):
         return 1.0 / self.geom[0]
     
+    def dksi1(self, x):
+        return - 6 * x / self.geom[0]**2 + 6 * x**2  / self.geom[0]**3
+
+    def dksi2(self, x):
+        return -3 * (x / self.geom[0])**2 + 4 * (x / self.geom[0]) - 1
+
+    def dksi3(self, x):
+        return 6 * x / (self.geom[0]**2) * (1 - x / self.geom[0])
+
+    def dksi4(self,x):
+        return -3 * (x / self.geom[0])**2 + 2 * x / self.geom[0]
+
     def dN0(self,x):
         return - 6 * x / self.geom[0]**2 + 6 * x**2  / self.geom[0]**3
 
@@ -149,6 +161,18 @@ class classicBeam:
     def dF1(self,x):
         return 2 * x * (x - self.geom[0]) / self.geom[0]**2 + (x / self.geom[0])**2
 
+    def d2ksi1(self, x):
+        return 6.0 * (-self.geom[0] + 2 * x) / self.geom[0]**3
+
+    def d2ksi2(self, x):
+        return (-6 * x + 4 * self.geom[0]) / self.geom[0]**2
+
+    def d2ksi3(self, x):
+        return 6.0 * (self.geom[0] - 2 * x) / self.geom[0]**3
+
+    def d2ksi4(self, x):
+        return (-6 * x + 2 * self.geom[0]) / self.geom[0]**2
+    
     def d2N0(self, x):
         return  6.0 * (-self.geom[0] + 2 * x) / self.geom[0]**3
 
@@ -160,6 +184,19 @@ class classicBeam:
 
     def d2F1(self, x):
         return (6 * x - 2 * self.geom[0]) / self.geom[0]**2
+
+    
+    def d3ksi1(self, x):
+        return 12 / self.geom[0]**3
+
+    def d3ksi2(self, x):
+        return -6 / self.geom[0]**2
+
+    def d3ksi3(self, x):
+        return -12 / self.geom[0]**3
+
+    def d3ksi4(self, x):
+        return -6 / self.geom[0]**2
 
     def d3N0(self,x):
         return 12 / self.geom[0]**3
@@ -178,22 +215,22 @@ class classicBeam:
         #print 'in calc nb x=' + str(x)
         n[0,0] = self.L0(x)
         n[0,6] = self.L1(x)
-        n[1,1] = self.N0(x)
-        n[1,4] = self.F0(x)
-        n[1,7] = self.N1(x)
-        n[1,10] = self.F1(x)
-        n[2,2] = self.N0(x)
-        n[2,3] = -self.F0(x)
-        n[2,8] = self.N1(x)
-        n[2,9] = -self.F1(x)
-        n[3,2] = self.dN0(x) 
-        n[3,3] = -self.dF0(x)
-        n[3,8] = self.dN1(x)
-        n[3,9] = -self.dF1(x)
-        n[4,1] = self.dN0(x)
-        n[4,4] = self.dF0(x)
-        n[4,7] = self.dN1(x)
-        n[4,10] = self.dF1(x)
+        n[1,1] = self.ksi1(x)
+        n[1,4] = -self.ksi2(x)
+        n[1,7] = self.ksi3(x)
+        n[1,10] = -self.ksi4(x)
+        n[2,2] = self.ksi1(x)
+        n[2,3] = self.ksi2(x)
+        n[2,8] = self.ksi3(x)
+        n[2,9] = self.ksi4(x)
+        n[3,2] = -self.dksi1(x) 
+        n[3,3] = -self.dksi2(x)
+        n[3,8] = -self.dksi3(x)
+        n[3,9] = -self.dksi4(x)
+        n[4,1] = self.dksi1(x)
+        n[4,4] = -self.dksi2(x)
+        n[4,7] = self.dksi3(x)
+        n[4,10] = -self.dksi4(x)
         n[5,5] = self.L0(x)
         n[5,11] = self.L1(x)
 
@@ -203,14 +240,14 @@ class classicBeam:
 
         b[0,0] = self.dL0(x)
         b[0,6] = self.dL1(x)
-        b[1,2] = -self.d2N0(x)
-        b[1,3] = self.d2F0(x)
-        b[1,8] = -self.d2N1(x)
-        b[1,9] = self.d2F1(x)
-        b[2,1] = -self.d2N0(x)
-        b[2,4] = -self.d2F0(x)
-        b[2,7] = -self.d2N1(x)
-        b[2,10] = -self.d2F1(x)
+        b[1,1] = -self.d2ksi1(x)
+        b[1,4] = self.d2ksi2(x)
+        b[1,7] = -self.d2ksi3(x)
+        b[1,10] = self.d2ksi4(x)
+        b[2,2] = -self.d2ksi1(x)
+        b[2,3] = -self.d2ksi2(x)
+        b[2,8] = -self.d2ksi3(x)
+        b[2,9] = -self.d2ksi4(x)
         b[3,5] = self.dL0(x)
         b[3,11] = self.dL1(x)
 
@@ -218,14 +255,14 @@ class classicBeam:
 
         bx = numpy.zeros((4,12))
 
-        bx[1,2] = -self.d3N0(x)
-        bx[1,3] = self.d3F0(x)
-        bx[1,8] = -self.d3N1(x)
-        bx[1,9] = self.d3F1(x)
-        bx[2,1] = -self.d3N0(x)
-        bx[2,4] = -self.d3F0(x)
-        bx[2,7] = -self.d3N1(x)
-        bx[2,10] = -self.d3F1(x)
+        bx[1,1] = -self.d3ksi1(x)
+        bx[1,4] = self.d3ksi2(x)
+        bx[1,7] = -self.d3ksi3(x)
+        bx[1,10] = self.d3ksi4(x)
+        bx[2,2] = -self.d3ksi1(x)
+        bx[2,3] = -self.d3ksi2(x)
+        bx[2,8] = -self.d3ksi3(x)
+        bx[2,9] = -self.d3ksi4(x)
         
         self.Bx = numpy.matrix(bx)
 

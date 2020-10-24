@@ -22,16 +22,16 @@ Ik = Symbol('Ik') #Integral (G*ro^2dF)
 #beam stiffness matrix
 F = zeros(4,4)
 F[0,0] = EF
-F[0,1] = Sy
-F[0,2] = Sz
+F[0,1] = Sz
+F[0,2] = Sy
 F[0,3] = 0
-F[1,0] = Sy
-F[1,1] = Iy
+F[1,0] = F[0,1]
+F[1,1] = Iz
 F[1,2] = Ir
 F[1,3] = 0
-F[2,0] = Sz
-F[2,1] = Ir
-F[2,2] = Iz
+F[2,0] = F[0,2]
+F[2,1] = F[1,2]
+F[2,2] = Iy
 F[2,3] = 0
 F[3,0] = 0
 F[3,1] = 0
@@ -74,25 +74,24 @@ d[11] = x1
 L0 = 1 - x / l
 L1 = x / l
 
-N0 = 1 - 3 * (x / l)**2 + 2 * (x / l)**3
-N1 = 3 * (x / l)**2 - 2 * (x / l)**3
-
-F0 = x / (l**2) * (x - l)**2
-F1 = (x / l)**2 * (x - l)
+ksi1 = 2 * (x / l)**3 - 3 * (x / l)**2 + 1
+ksi2 = l * (-(x / l)**3 + 2 * (x / l)**2 - x / l)
+ksi3 = -2 * (x / l)**3 + 3 * (x / l)**2
+ksi4 = l * (-(x / l)**3 + (x / l)**2)
 
 #displacement matrix
 n = zeros(4,12)
 
 n[0,0] = L0
 n[0,6] = L1
-n[1,1] = N0
-n[1,4] = F0
-n[1,7] = N1
-n[1,10] = F1
-n[2,2] = N0
-n[2,3] = -F0
-n[2,8] = N1
-n[2,9] = -F1
+n[1,1] = ksi1
+n[1,4] = -ksi2
+n[1,7] = ksi3
+n[1,10] = -ksi4
+n[2,2] = ksi1
+n[2,3] = ksi2
+n[2,8] = ksi3
+n[2,9] = ksi4
 n[3,5] = L0
 n[3,11] = L1
 
@@ -105,27 +104,27 @@ w = nd[2,0]
 fi = nd[3,0]
 
 #strain
-ex = diff(u,x) + z * diff(v,x,2) + y * diff(w,x,2)
+ex = diff(u,x) + y * diff(v,x,2) - z * diff(w,x,2)
 gama = diff(fi,x)
 #strain matrix
 b = zeros(4,12)
 
 b[0,0] = diff(L0,x)
 b[0,6] = diff(L1,x)
-b[1,2] = -diff(N0,x,2)
-b[1,3] = diff(F0,x,2)
-b[1,8] = -diff(N1,x,2)
-b[1,9] = diff(F1,x,2)
-b[2,1] = -diff(N0,x,2)
-b[2,4] = -diff(F0,x,2)
-b[2,7] = -diff(N1,x,2)
-b[2,10] = -diff(F1,x,2)
+b[1,1] = -diff(ksi1,x,2)
+b[1,4] = diff(ksi2,x,2)
+b[1,7] = -diff(ksi3,x,2)
+b[1,10] = diff(ksi4,x,2)
+b[2,2] = -diff(ksi1,x,2)
+b[2,3] = -diff(ksi2,x,2)
+b[2,8] = -diff(ksi3,x,2)
+b[2,9] = -diff(ksi4,x,2)
 b[3,5] = diff(L0,x)
 b[3,11] = diff(L1,x)
 
 bd = b*d
 
-eps = bd[0,0] + z * bd[1,0] + y * bd[2,0]
+eps = bd[0,0] + z * bd[2,0] - y * bd[1,0]
 
 e1 = simplify(eps - ex)
 
@@ -138,7 +137,20 @@ sw = 1 / 2.0 * eps**2
 bdb = b.T*F*b
 
 k = integrate(bdb,(x,0,l))
+pprint(k[0,:])
+pprint(k[1,1:])
+pprint(k[2,2:])
+pprint(k[3,3:])
+pprint(k[4,4:])
+pprint(k[5,5:])
+pprint(k[6,6:])
+pprint(k[7,7:])
+pprint(k[8,8:])
+pprint(k[9,9:])
+pprint(k[10,10:])
+pprint(k[11,11:])
 
 
 pprint(k - k.T)
+
 #pprint(k)

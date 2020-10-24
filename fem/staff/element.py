@@ -1,6 +1,7 @@
 import numpy
 from fem.beams import classicBeam
 from fem.beams import timoshenkoBeam
+from fem.beams import classicWarp
 class element:
     def setData(self, data):
         self.KU = data[0]       #node count for element
@@ -14,11 +15,15 @@ class element:
         self.hd = []
         self.sig = []
 
-    def calc(self):
-        #import classicWarp1
-        #self.cb = classicWarp1.classicWarp()
-        self.cb = timoshenkoBeam.timoshenkoBeam()
-        #self.cb = classicBeam.classicBeam()        
+    def calc(self, modid):
+	if modid == 1:
+            self.cb = classicBeam.classicBeam()
+        if modid == 2:
+            self.cb = classicWarp.classicWarp()
+        if modid == 3:
+            self.cb = timoshenkoBeam.timoshenkoBeam()
+        if modid == 4:
+            self.cb = timoshenkoBeam.timoshenkoBeam()
         self.cb.setData(self.param)
         self.cb.calc()
         self.K = self.cb.getM()

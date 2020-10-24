@@ -12,3 +12,12 @@ class elastic:
         
     def get_a(self):
         return self.a
+
+    def get_E(self):
+        return self.mat[0]
+
+    def get_G(self):
+        return self.mat[2]
+
+    def get_nu(self):
+        return self.mat[1]
