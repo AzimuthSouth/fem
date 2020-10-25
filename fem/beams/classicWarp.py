@@ -401,7 +401,7 @@ class classicWarp:
         #print "N={}".format(self.N)
         u = numpy.ravel(self.N * ui).T
         eps = numpy.ravel(self.B * ui).T
-        sct = self.sect[[0,3,4,5],:][:,[0,3,4,5]]
+        sct = self.sect[[0,3,4,5,6],:][:,[0,3,4,5,6]]
         #print "sect = " + str(sct)
         f = numpy.ravel(sct * self.B * ui).T
         f1 = numpy.ravel(sct * self.Bx * ui).T
