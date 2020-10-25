@@ -97,9 +97,9 @@ class model:
     def solve(self):
         self.u = self.K.I * self.RR
         #print "eps = " + str(va.norm(numpy.ravel(self.K * self.u - self.RR).T))
-        kss = 6
+        kss = self.kss
         f = open('displ.txt', 'w')
-        for i in range(len(self.u) // 6):
+        for i in range(len(self.u) // kss):
             f.write(' '.join([str(k) for k in numpy.ravel(self.u[i * kss: (i + 1) * kss])]))
             f.write('\n')
         f.close()

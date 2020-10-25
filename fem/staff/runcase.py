@@ -4,6 +4,9 @@ from fem.staff import model
 #import model
 def runCase(inputdata):
     [matid, fmx, beammod, sectid, sectpar, load] = inputdata
+    kss = 6
+    if (beammod == 2)|(beammod == 4):
+        kss = 7
     #nodes
     nd = []
     L = 100.0
@@ -21,13 +24,12 @@ def runCase(inputdata):
     #nodes loads
     rr = []
     for i in range(len(nd)):
-        rri = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        rr.append(rri)
-    rr[len(nd) - 1] = load
-
+        rr.append([0.0] * kss)
+    for j in range(len(load)):
+        rr[len(nd) - 1][j] = load[j]
+    
     #constrains
     ng = []
-    kss = 6
     ind = 1
     for i in range(len(nd)):
     	ngi = []

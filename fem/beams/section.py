@@ -53,7 +53,7 @@ class Circle(Section):
                     [  0.0,   0.0,   0.0, E * I,   0.0,    0.0,    0.0], 
                     [  0.0,   0.0,   0.0,   0.0, E * I,    0.0,    0.0], 
                     [  0.0,   0.0,   0.0,   0.0,   0.0, G * Ip,    0.0],
-                    [  0.0,   0.0,   0.0,   0.0,   0.0,    0.0, E * Ip]])
+                    [  0.0,   0.0,   0.0,   0.0,   0.0,    0.0, 2.2]])
 
     def calc_geom(self):
         r = self.geom[0]
@@ -86,7 +86,7 @@ class Rectangle(Section):
                     [  0.0,   0.0,   0.0, E * Iy,   0.0,    0.0,    0.0],   #kapaY
                     [  0.0,   0.0,   0.0,   0.0, E * Iz,    0.0,    0.0],   #kapaZ
                     [  0.0,   0.0,   0.0,   0.0,   0.0, G * Ik,    0.0],    #khi
-                    [  0.0,   0.0,   0.0,   0.0,   0.0,    0.0, E * Ik]]);  #dkhi
+                    [  0.0,   0.0,   0.0,   0.0,   0.0,    0.0,    1.0]]);  #dkhi
 
     def calc_geom(self):
         [b, h] = self.geom
@@ -131,7 +131,7 @@ class TwoTavr(Section):
         Ip = Iy + Iz
         Ip = 2 * h * d**3 / 3 + (w - 2 * d) * t**3 / 3
         Iw = h**3 * (w - d)**2 * d / 24
-        print("F={}, Iy={}, Iz={}, Ip={}, Iw={}".format(F, Iy, Iz, Ip, Iw))
+        #print("F={}, Iy={}, Iz={}, Ip={}, Iw={}".format(F, Iy, Iz, Ip, Iw))
         #print 'Iw=' + str(Iw)
         #print 'Ik=' + str(Ip)
         E = 1.0 / self.mat[0,0]
